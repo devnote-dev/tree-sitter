@@ -213,10 +213,14 @@ module.exports = grammar({
         token.immediate("'"),
       ),
 
-    symbol: $ =>
-      choice(
-        seq(':', choice($.identifier, $.string)),
-      ),
+    // This is all inlined due to
+    // https://github.com/tree-sitter/tree-sitter/issues/449#issuecomment-880063486
+    symbol: $ => seq(':', choice(
+      // Identifier
+      seq(ident_start, repeat(ident_part)),
+      // String
+      seq('"', repeat(/[^"]/), '"'),
+    )),
 
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
 
